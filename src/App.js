@@ -1,14 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+
+import './App.scss';
+import Header from './component/Header';
+import Container from 'react-bootstrap/Container';
+import { useContext, useEffect, useState } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
+
+import { UserContext } from './component/UserContext';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
+  const { user, loginContext } = useContext(UserContext)
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      loginContext(localStorage.getItem("email"),
+        localStorage.getItem("token"))
+    }
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Hello world with React and Hoi Dan IT!</h1>
-      </header>
-    </div>
+    <>
+      <div className="app-container">
+        <Header />
+        <Container>
+          <AppRoutes />
+        </Container>
+
+
+
+      </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
   );
 }
 

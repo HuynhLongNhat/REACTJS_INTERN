@@ -1,0 +1,14 @@
+.sort-header {
+    display: flex;
+    justify-content: space-between;
+    i {
+        cursor: pointer;
+        padding: 0 2px;
+    }
+}
+.customize-table {
+    overflow-x: auto;
+}
+.pagination {
+    justify-content: center;
+}
