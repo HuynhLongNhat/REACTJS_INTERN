@@ -6,17 +6,15 @@ import { useContext, useEffect, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
-
-import { UserContext } from './component/UserContext';
 import AppRoutes from './routes/AppRoutes';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleRefresh } from './redux/actions/userAction';
 
 function App() {
-  const { user, loginContext } = useContext(UserContext)
+  const dispatch = useDispatch();
   useEffect(() => {
     if (localStorage.getItem('token')) {
-      loginContext(localStorage.getItem("email"),
-        localStorage.getItem("token"))
+      dispatch(handleRefresh())
     }
   }, [])
   return (
@@ -26,9 +24,6 @@ function App() {
         <Container>
           <AppRoutes />
         </Container>
-
-
-
       </div>
       <ToastContainer
         position="top-right"

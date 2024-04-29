@@ -1,46 +1,48 @@
 import { useEffect, useState, useContext } from "react";
-import { loginApi } from "../service/userService"
+
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from './UserContext'
+
+import { handleLoginRedux } from "../redux/actions/userAction"
+import { useDispatch, useSelector } from "react-redux";
 const Login = () => {
-    const { loginContext } = useContext(UserContext)
+    const dispatch = useDispatch()
+    const isLoading = useSelector(state => state.user.isLoading)
+    const user = useSelector(state => state.user.user)
     const navigation = useNavigate()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [isShowPassword, setIsShowPassword] = useState(false)
-    const [isLoadingAPI, setLoadingAPI] = useState(false)
 
-    // useEffect(() => {
-    //     let token = localStorage.getItem("token")
-    //     if (token) {
-    //         navigation('/')
-    //     }
-
-    // },)
+    useEffect(() => {
+        if (user && user.auth === true) {
+            navigation('/')
+        }
+    }, [user])
     const handleLogin = async () => {
         if (!email || !password) {
             toast.error("Email/Password is required!")
             return
         }
-        setLoadingAPI(true)
-        let res = await loginApi(email.trim(), password)
-        if (res.token) {
-            loginContext(email, res.token)
-            navigation('/')
-            toast.success("Login success!")
-            setLoadingAPI(false)
-            setEmail("");
-            setPassword('')
-        }
-        else {
-            if (res && res.status === 400) {
-                setLoadingAPI(false)
-                setEmail("");
-                setPassword('')
-                toast.error(res.data.error)
-            }
-        }
+
+        dispatch(handleLoginRedux(email, password))
+        // let res = await loginApi(email.trim(), password)
+        // if (res.token) {
+        //     loginContext(email, res.token)
+        //     navigation('/')
+        //     toast.success("Login success!")
+        //     setLoadingAPI(false)
+        //     setEmail("");
+        //     setPassword('')
+        // }
+        // else {
+        //     if (res && res.status === 400) {
+        //         setLoadingAPI(false)
+        //         setEmail("");
+        //         setPassword('')
+        //         toast.error(res.data.error)
+        //     }
+        // }
     }
     const handleGoBack = () => {
         navigation("/")
@@ -81,7 +83,7 @@ const Login = () => {
             disabled={email && password ? false : true}
             onClick={() => handleLogin()}
         >
-            {isLoadingAPI ? <i className="fa-solid fa-sync fa-spin"></i> : "Login"} </button>
+            {isLoading ? <i className="fa-solid fa-sync fa-spin"></i> : "Login"} </button>
         <div className="back my-3">
             <i className="fa-solid fa-angles-left"></i>
             <span onClick={() => handleGoBack()} >Go back</span>

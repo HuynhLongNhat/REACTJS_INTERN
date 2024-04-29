@@ -8,23 +8,24 @@ import { NavLink } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useContext, useEffect, useState } from 'react';
-import { UserContext } from './UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleLogoutRedux } from '../redux/actions/userAction';
 const Header = (props) => {
-    const { logout, user } = useContext(UserContext)
-    const [hideHeader, setHideHeader] = useState(false)
-    // useEffect(() => {
-    //     if (window.location.pathname === '/login') {
-    //         setHideHeader(true)
-    //     }
-    // }, [])
+    const dispatch = useDispatch()
     const navigation = useNavigate()
-
-
+    const user = useSelector(state => state.user.user)
     const handleLogout = () => {
-        logout()
-        navigation('/')
-        toast.success("Logout success!")
+        dispatch(handleLogoutRedux())
     }
+    useEffect(() => {
+        if (user && user.auth === false) {
+            navigation('/')
+            toast.success("Logout success!")
+        }
+    }, [user])
+
+
+
     return (<>
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
